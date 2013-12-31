@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="TamOne Click" Language="1033" Version="1.0.1.0" Manufacturer="TamOne" UpgradeCode="aa589f40-64cf-40cf-915d-f489a49a0eee">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of TamOne Click is already installed." />
+		<MediaTemplate  EmbedCab="yes" CompressionLevel="high" />
+
+		<Feature Id="ProductFeature" Title="TamOne Click" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="Shortcuts" />
+		</Feature>
+    <UI />
+    <UIRef Id="WixUI_Minimal" />
+    <Property Id="ApplicationFolderName" Value="TamOne Click" />
+    <Property Id="WixAppFolder" Value="WixPerMachineFolder" />
+    <WixVariable Id="WixUISupportPerUser" Value="0" />
+    <WixVariable Id="WixUIBannerBmp" Value="resources\WixUIBannerBmp.bmp"/>
+    <WixVariable Id="WixUIDialogBmp" Value="resources\WixUIDialogBmp.bmp"/>
+    <Icon Id="TamOneClick.exe" SourceFile="$(var.TamOneDialer.TargetPath)" />
+
+    <PropertyRef Id="NETFRAMEWORK40CLIENT" />
+    <Condition Message="This application requires .NET Framework 4.0.">Installed OR NETFRAMEWORK40CLIENT</Condition>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+			  <Directory Id="INSTALLFOLDER" Name="TamOne Click" />
+      </Directory>
+      <Directory Id="ProgramMenuFolder" Name="Programs">
+        <Directory Id="ProgramMenuDir" Name="TamOne" />
+      </Directory>
+      <Directory Id="DesktopFolder" Name="Desktop" />
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="ProductComponent">
+        <File Source="$(var.TamOneDialer.TargetPath)" KeyPath="yes">
+          <Shortcut Id="startmenuShortcut" Directory="ProgramMenuDir" Name="TamOne Click"
+                  WorkingDirectory='INSTALLDIR' Icon="TamOneClick.exe" IconIndex="0" Advertise="yes" />
+          <Shortcut Id="desktopShortcut" Directory="DesktopFolder" Name="TamOne Click"
+            WorkingDirectory='INSTALLDIR' Icon="TamOneClick.exe" IconIndex="0" Advertise="yes" />
+        </File>
+      </Component>
+      <Component Id="Config">
+        <File Source="$(var.TamOneDialer.TargetPath).config" />
+      </Component>
+      <Component Id="Manifest">
+        <File Source="$(var.TamOneDialer.TargetPath).manifest" />
+      </Component>
+      <Component Id="MahAppsDll">
+        <File Source="$(var.TamOneDialer.TargetDir)MahApps.Metro.dll" />
+      </Component>
+      <Component Id="JsonDll">
+        <File Source="$(var.TamOneDialer.TargetDir)Newtonsoft.Json.dll" />
+      </Component>
+      <Component Id="InteractivityDll">
+        <File Source="$(var.TamOneDialer.TargetDir)System.Windows.Interactivity.dll" />
+      </Component>
+		</ComponentGroup>
+
+    <ComponentGroup Id="Shortcuts" Directory="ProgramMenuDir">
+      <Component Id="ProgramMenuDir">
+        <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
+        <RegistryValue Root='HKCU' Key='Software\TamOne\Click' Type='string' Value='' KeyPath='yes' />
+      </Component>
+    </ComponentGroup>
+	</Fragment>
+  
+  <Fragment>
+    
+  </Fragment>
+</Wix>

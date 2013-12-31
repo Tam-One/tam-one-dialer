@@ -1,0 +1,35 @@
+﻿<Controls:MetroWindow x:Class="TamOne_Dialer.HelpWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:TamOne_Dialer"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        Title="Settings" Height="272" Width="334" ShowTitleBar="False" ShowMinButton="False" ShowMaxRestoreButton="False" ShowInTaskbar="False" Padding="0" Margin="0" BorderThickness="1" BorderBrush="#FFCBCBCB" ResizeMode="NoResize">
+    <i:Interaction.Behaviors>
+        <Behaviours:BorderlessWindowBehavior />
+    </i:Interaction.Behaviors>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Center" FontSize="20" Foreground="#ed2227">help</Label>
+        <ScrollViewer Grid.Row="1" Margin="10">
+            <TextBlock TextWrapping="Wrap">
+                <Bold>Inloggen</Bold><LineBreak/>
+                U gebruikt voor de TamOne Dialer de inloggegevens waarmee u inlogt op de TamOne Portal.
+                <LineBreak/>
+                <LineBreak/>
+                <Bold>Sneltoets</Bold><LineBreak/>
+                De TamOne Dialer kan een tekstselectie uit een andere applicatie direct overnemen,
+                zodat u het nummer snel kunt bellen. Dit kan in drie stappen:<LineBreak/>
+                1. Selecteer het nummer.<LineBreak/>
+                2. Gebruik de toetscombinatie <Italic>Ctrl + F1</Italic>. De TamOne Dialer verschijnt automatisch.<LineBreak/>
+                3. Als u <Italic>Automatisch bellen bij sneltoets</Italic> heeft ingeschakeld (onder <Bold>Instellingen</Bold>),
+                gaat uw toestel nu over. Als deze optie niet is ingeschakeld,
+                klik dan op knop <Bold>bellen</Bold> of gebruik de <Italic>Enter</Italic>-toets.
+            </TextBlock>
+        </ScrollViewer>
+    </Grid>
+</Controls:MetroWindow>

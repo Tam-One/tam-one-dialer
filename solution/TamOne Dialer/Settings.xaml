@@ -1,0 +1,55 @@
+﻿<Controls:MetroWindow x:Class="TamOne_Dialer.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:TamOne_Dialer"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        Title="Settings" Height="288.627" Width="393" ShowTitleBar="False" ShowMinButton="False" ShowMaxRestoreButton="False" ShowInTaskbar="False" Padding="0" Margin="0" BorderThickness="1" BorderBrush="#FFCBCBCB" ResizeMode="NoResize">
+    <i:Interaction.Behaviors>
+        <Behaviours:BorderlessWindowBehavior />
+    </i:Interaction.Behaviors>
+    <Grid Margin="0,0,10,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- titel -->
+            <RowDefinition Height="Auto"/>
+            <!-- username-->
+            <RowDefinition Height="Auto"/>
+            <!-- password -->
+            <RowDefinition Height="Auto"/>
+            <!-- server -->
+            <RowDefinition Height="Auto"/>
+            <!-- server -->
+            <RowDefinition/>
+            <!-- ok/cancel -->
+        </Grid.RowDefinitions>
+        <Label Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Center" FontSize="20" Foreground="#ed2227">instellingen</Label>
+        <Label Grid.Row="1" Grid.Column="0" FontSize="16" FontWeight="Light" Margin="10,0" VerticalContentAlignment="Center">Gebruikersnaam</Label>
+        <TextBox x:Name="txtUsername" Grid.Row="1" Grid.Column="1" Margin="0,10" FontSize="14" FontWeight="Light" />
+        <Label Grid.Row="2" Grid.Column="0" FontSize="16" FontWeight="Light" Margin="10,0" VerticalContentAlignment="Center">Wachtwoord</Label>
+        <PasswordBox x:Name="txtPassword" Grid.Row="2" Grid.Column="1" Margin="0,10" FontSize="14" FontWeight="Light" />
+        <Label x:Name="lblPortalServer" Grid.Row="3" Grid.Column="0" FontSize="16" FontWeight="Light" Margin="10,0" VerticalContentAlignment="Center">Server</Label>
+        <TextBox x:Name="txtPortalServer" Grid.Row="3" Grid.Column="1" Margin="0,10" FontSize="14" FontWeight="Light" />
+        <Label Grid.Row="4" Grid.Column="0" FontSize="16" FontWeight="Light" Margin="10,0" VerticalContentAlignment="Center"></Label>
+        <CheckBox x:Name="chkAutoDial" Grid.Row="4" Grid.Column="1" FontSize="14" FontWeight="Light" Margin="0,10">Automatisch bellen bij sneltoets</CheckBox>
+        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{x:Null}" Margin="10,10,0,10" Padding="7,2.5" IsDefault="True" Background="#ed2227" FontSize="16" Foreground="White" FontWeight="Light" BorderThickness="0" Click="btnOK_Click">
+                <StackPanel Orientation="Horizontal">
+                    <!--<Image Width="20" Source="/resources/bigphone.png" />-->
+                    <Label Foreground="White">Inloggen</Label>
+                </StackPanel>
+            </Button>
+            <Button Style="{x:Null}" Margin="10,10,0,10" Padding="7,2.5" Background="#FF000000" FontSize="16" Foreground="White" FontWeight="Light" BorderThickness="0" IsCancel="True">
+                <StackPanel Orientation="Horizontal">
+                    <!--<Image Width="20" Source="/resources/bigphone.png" />-->
+                    <Label Foreground="White">Annuleren</Label>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+    </Grid>
+</Controls:MetroWindow>
