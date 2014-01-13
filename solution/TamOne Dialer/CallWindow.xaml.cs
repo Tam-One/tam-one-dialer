@@ -184,7 +184,14 @@ namespace TamOne_Dialer
             this.Dispatcher.Invoke((Action)delegate()
             {
                 Console.WriteLine("Login succeeded.");
-                lblStatus.Content = "Ingelogd als " + session.Username + ".";
+                if (e.Name == null)
+                {
+                    lblStatus.Content = "Ingelogd als " + session.Username + ".";
+                }
+                else
+                {
+                    lblStatus.Content = "Ingelogd als " + e.Name + ".";
+                }
             });
             session.GetDeviceList();
             session.GetPrefixList();

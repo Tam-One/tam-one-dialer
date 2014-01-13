@@ -107,12 +107,19 @@ namespace TamOne_Dialer
                     var stream = request.GetRequestStream();
                     stream.Write(postBody, 0, postBody.Length);
                     stream.Close();
-                    getAndParseResponse(request);
+                    dynamic result = getAndParseResponse(request);
+                    string name = null;
+                    try
+                    {
+                        name = (string)result.data.name;
+                    }
+                    catch { }
+                    
                     if (successHandler != null)
                     {
-                        successHandler(new LoginSucceededEventArgs(loginType));
+                        successHandler(new LoginSucceededEventArgs(loginType, name));
                     }
-                    OnLoginSucceeded(new LoginSucceededEventArgs(loginType));
+                    OnLoginSucceeded(new LoginSucceededEventArgs(loginType, name));
                 }
                 catch (PortalException e)
                 {
@@ -377,10 +384,20 @@ namespace TamOne_Dialer
         public class LoginSucceededEventArgs : EventArgs
         {
             public LoginType LoginType { get; private set; }
+            /// <summary>
+            /// May be null if no name is available
+            /// </summary>
+            public string Name { get; private set; }
 
-            public LoginSucceededEventArgs(LoginType loginType)
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="loginType"></param>
+            /// <param name="name">May be null if no name is available</param>
+            public LoginSucceededEventArgs(LoginType loginType, string name)
             {
                 LoginType = loginType;
+                Name = name;
             }
         }
 
