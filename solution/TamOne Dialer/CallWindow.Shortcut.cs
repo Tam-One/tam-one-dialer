@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -29,6 +30,8 @@ namespace TamOne_Dialer
 
         const int WM_DRAWCLIPBOARD = 0x0308;
         const int WM_CHANGECBCHAIN = 0x030D;
+
+        private Timer copyTimer = new Timer(2000);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
@@ -63,7 +66,10 @@ namespace TamOne_Dialer
         private void InitShortcut()
         {
             Console.WriteLine("Entered InitShortcut");
-            
+
+            copyTimer.AutoReset = false;
+            copyTimer.Elapsed += copyTimer_Elapsed;
+
             HotKeyHost hotKeyHost = new HotKeyHost((HwndSource)HwndSource.FromVisual(this));
             Console.WriteLine("Created new HotKeyHost");
             var callKey = new HotKey(Key.F1, ModifierKeys.Control, true);
@@ -95,6 +101,17 @@ namespace TamOne_Dialer
             RegisterClipboardViewer();
         }
 
+        void copyTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            Console.WriteLine("Copy timeout!");
+            getCopyValue = false;
+            this.Dispatcher.Invoke((Action)delegate()
+            {
+                this.ActivateThoroughly();
+                MessageBox.Show(this, "Het telefoonnummer kon niet worden gelezen. Probeer het nogmaals.");
+            });
+        }
+
         public void RegisterClipboardViewer()
         {
             clipboardViewerNext = SetClipboardViewer(hwndSource.Handle);
@@ -108,6 +125,7 @@ namespace TamOne_Dialer
         private void CopyFromActiveProgram()
         {
             getCopyValue = true;
+            copyTimer.Start();
             System.Windows.Forms.SendKeys.SendWait("^c");
         }
 
@@ -115,6 +133,10 @@ namespace TamOne_Dialer
         {
             //this.ActivateThoroughly();
             Console.WriteLine("HotKey called");
+
+            copyTimer.Stop();
+            getCopyValue = false;
+
             var element = AutomationElement.FocusedElement;
             //AutomationElement.
 
@@ -154,6 +176,7 @@ namespace TamOne_Dialer
 
                     if (getCopyValue && Clipboard.ContainsText())
                     {
+                        copyTimer.Stop();
                         getCopyValue = false;
                         var selectedText = Clipboard.GetText();
                         txtPhoneNumber.Text = selectedText.Replace("\r\n", "").Replace("\n", "");
