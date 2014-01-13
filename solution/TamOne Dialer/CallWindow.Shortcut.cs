@@ -155,7 +155,7 @@ namespace TamOne_Dialer
 
                     var selectedText = sb.ToString();
                     Console.WriteLine(selectedText);
-                    this.txtPhoneNumber.Text = selectedText.Replace("\r\n", "").Replace("\n", "");
+                    this.txtPhoneNumber.Text = selectedText.Replace("\r\n", "").Replace("\n", "").Trim();
                     this.ActivateThoroughly();
                     if (Properties.Settings.Default.AutoDial)
                     {
@@ -179,7 +179,7 @@ namespace TamOne_Dialer
                         copyTimer.Stop();
                         getCopyValue = false;
                         var selectedText = Clipboard.GetText();
-                        txtPhoneNumber.Text = selectedText.Replace("\r\n", "").Replace("\n", "");
+                        txtPhoneNumber.Text = selectedText.Replace("\r\n", "").Replace("\n", "").Trim();
                         Clipboard.Clear();
                         this.ActivateThoroughly();
                         if (Properties.Settings.Default.AutoDial)
