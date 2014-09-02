@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,11 +24,13 @@ namespace TamOne_Dialer
         private bool freshStart = true;
         private bool deviceListValid = false;
         private bool prefixListValid = false;
+        private TaskbarIcon trayIcon;
 
         public CallWindow()
         {
             //Console.WriteLine();
             InitializeComponent();
+            trayIcon = (TaskbarIcon)FindResource("TrayIcon");
             session.LoggingIn += session_LoggingIn;
             session.LoginFailed += session_LoginFailed;
             session.LoginSucceeded += session_LoginSucceeded;
@@ -39,6 +42,19 @@ namespace TamOne_Dialer
             session.PrefixListFailed += session_PrefixListFailed;
             this.Activated += CallWindow_Activated;
             this.Loaded += CallWindow_Loaded;
+            this.Closing += CallWindow_Closing;
+            trayIcon.TrayMouseDoubleClick += TrayIcon_TrayMouseDoubleClick;
+        }
+
+        void TrayIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            this.ActivateThoroughly();
+        }
+
+        void CallWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            this.Hide();
         }
 
         void session_PrefixListFailed(PortalSession2.PrefixListFailedEventArgs e)
@@ -46,14 +62,7 @@ namespace TamOne_Dialer
             prefixListValid = false;
             this.Dispatcher.Invoke((Action)delegate()
             {
-                if (e.Exception == null)
-                {
-                    MessageBox.Show("De nummerherkenningslijst kon niet worden opgehaald.");
-                }
-                else
-                {
-                    MessageBox.Show("De nummerherkenningslijst kon niet worden opgehaald.\n\n" + e.Exception.Message);
-                }
+                ShowNotification("er ging iets mis", "De nummerherkenningslijst kon niet worden opgehaald.", NotificationType.Error, e.Exception);
             });
         }
 
@@ -62,14 +71,7 @@ namespace TamOne_Dialer
             deviceListValid = false;
             this.Dispatcher.Invoke((Action)delegate()
             {
-                if (e.Exception == null)
-                {
-                    MessageBox.Show("De toestellijst kon niet worden opgehaald.");
-                }
-                else
-                {
-                    MessageBox.Show("De toestellijst kon niet worden opgehaald.\n\n" + e.Exception.Message);
-                }
+                ShowNotification("er ging iets mis", "De toestellijst kon niet worden opgehaald.", NotificationType.Error, e.Exception);
             });
         }
 
@@ -94,14 +96,29 @@ namespace TamOne_Dialer
             this.Dispatcher.Invoke((Action)delegate()
             {
                 Console.WriteLine("Call failed.");
-                if (e.Exception != null)
+                ShowNotification("belstatus", "Belopdracht mislukt.", NotificationType.Error, e.Exception);
+                /*if (e.Exception != null)
                 {
-                    MessageBox.Show("Belopdracht mislukt.\n\n" + e.Exception.Message);
+                    if (this.IsActive)
+                    {
+                        MessageBox.Show("Belopdracht mislukt.\n\n" + e.Exception.Message);
+                    }
+                    else
+                    {
+                        trayIcon.ShowBalloonTip("Belstatus", "Belopdracht mislukt." + e.Exception.Message, BalloonIcon.Error);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Belopdracht mislukt.");
-                }
+                    if (this.IsActive)
+                    {
+                        MessageBox.Show("Belopdracht mislukt.");
+                    }
+                    else
+                    {
+                        trayIcon.ShowBalloonTip("Belstatus", "Belopdracht mislukt.", BalloonIcon.Error);
+                    }
+                }*/
             });
         }
 
@@ -128,6 +145,8 @@ namespace TamOne_Dialer
             this.Dispatcher.Invoke((Action)delegate()
             {
                 Console.WriteLine("Call succeeded.");
+                //trayIcon.ShowBalloonTip("Belstatus", "Bellen naar " + e.Given + "...", BalloonIcon.Info);
+                ShowNotification("belstatus", "Bellen naar " + e.Given + "...", NotificationType.Info, NotificationMode.BalloonWhenInactiveOnly);
                 //txtPhoneNumber.Text = e.Dialed;
             });
         }
@@ -145,7 +164,7 @@ namespace TamOne_Dialer
                 if (e.Prefixes.Count == 0)
                 {
                     prefixListValid = false;
-                    MessageBox.Show("De nummerherkenningslijst is leeg. Neem contact op met TamOne.");
+                    ShowNotification("er ging iets mis", "De nummerherkenningslijst is leeg. Neem contact op met Tam One.", NotificationType.Warning);
                 }
                 else
                 {
@@ -168,7 +187,7 @@ namespace TamOne_Dialer
                 if (e.Devices.Count == 0)
                 {
                     deviceListValid = false;
-                    MessageBox.Show("Er zijn geen toestellen gekoppeld aan uw account. U kunt deze applicatie niet gebruiken.");
+                    ShowNotification("er is iets mis", "Er zijn geen toestellen gekoppeld aan uw account. U kunt deze applicatie niet gebruiken.", NotificationType.Error, NotificationMode.MessageBoxOnly);
                 }
                 else
                 {
@@ -204,14 +223,7 @@ namespace TamOne_Dialer
                 Console.WriteLine("Login failed.");
                 if (e.LoginType != PortalSession2.LoginType.SILENT)
                 {
-                    if (e.Exception != null)
-                    {
-                        MessageBox.Show("Inloggen mislukt.\n\n" + e.Exception.Message);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Inloggen mislukt.");
-                    }
+                    ShowNotification("er ging iets mis", "Inloggen mislukt", NotificationType.Error, e.Exception, NotificationMode.MessageBoxOnly);
                 }
                 lblStatus.Content = "U bent niet ingelogd.";
             });
@@ -293,11 +305,12 @@ namespace TamOne_Dialer
         {
             if (session.LoginState == PortalSession2.LoginStates.LOGGED_OUT || !prefixListValid || !deviceListValid)
             {
+                this.ActivateThoroughly();
                 ShowSettings();
             }
             else if (cmdPrefixes.SelectedItem == null || cmdDevices.SelectedItem == null)
             {
-                MessageBox.Show("Selecteer een toestel en een nummerherkenningsoptie.");
+                ShowNotification("oeps", "Selecteer een toestel en een nummerherkenningsoptie.", NotificationType.Info, NotificationMode.MessageBoxOnly);
             }
             else if (session.LoginState == PortalSession2.LoginStates.LOGGED_IN)
             {
@@ -309,6 +322,71 @@ namespace TamOne_Dialer
         {
             session.AssociateNewCookieContainer();
             Console.WriteLine("Associated new cookie container.");
+        }
+
+        private void TrayMenu_ShowMainWindow(object sender, RoutedEventArgs e)
+        {
+            this.ActivateThoroughly();
+        }
+
+        private void TrayMenu_Shutdown(object sender, RoutedEventArgs e)
+        {
+            App.Current.Shutdown();
+        }
+
+        enum NotificationType
+        {
+            Info,
+            Warning,
+            Error
+        }
+
+        enum NotificationMode
+        {
+            MessageBoxOnly = 1,
+            BalloonWhenInactiveOnly = 2,
+            MessageBoxOrBalloon = 3
+        }
+
+        private void ShowNotification(string title, string message, NotificationType type, NotificationMode mode = NotificationMode.MessageBoxOrBalloon)
+        {
+            ShowNotification(title, message, type, null, mode);
+        }
+
+        private void ShowNotification(string title, string message, NotificationType type, Exception e, NotificationMode mode = NotificationMode.MessageBoxOrBalloon)
+        {
+            if (mode == NotificationMode.MessageBoxOnly || (this.IsActive && mode == NotificationMode.MessageBoxOrBalloon))
+            {
+                this.ActivateThoroughly();
+                MessageBox.Show(this, message + (e != null ? ("\n\n" + e.Message) : ""), "Tam One Click: " + title, MessageBoxButton.OK, convertNotificationTypeToMessageBoxImage(type));
+            }
+
+            if (!this.IsActive && (mode == NotificationMode.BalloonWhenInactiveOnly || mode == NotificationMode.MessageBoxOrBalloon))
+            {
+                trayIcon.ShowBalloonTip("Tam One Click: " + title, message + (e != null ? ("\n\n" + e.Message) : ""), convertNotificationTypeToBalloonIcon(type));
+            }
+        }
+
+        private MessageBoxImage convertNotificationTypeToMessageBoxImage(NotificationType type)
+        {
+            switch (type)
+            {
+                case NotificationType.Error: return MessageBoxImage.Error;
+                case NotificationType.Info: return MessageBoxImage.Information;
+                case NotificationType.Warning: return MessageBoxImage.Warning;
+                default: return MessageBoxImage.None;
+            }
+        }
+
+        private BalloonIcon convertNotificationTypeToBalloonIcon(NotificationType type)
+        {
+            switch (type)
+            {
+                case NotificationType.Error: return BalloonIcon.Error;
+                case NotificationType.Info: return BalloonIcon.Info;
+                case NotificationType.Warning: return BalloonIcon.Warning;
+                default: return BalloonIcon.None;
+            }
         }
 
         

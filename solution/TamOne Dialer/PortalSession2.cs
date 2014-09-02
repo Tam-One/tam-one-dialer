@@ -247,7 +247,7 @@ namespace TamOne_Dialer
                     Console.WriteLine(url);
                     var request = configPostRequest(url);
                     dynamic result = getAndParseResponse(request);
-                    OnCalled(new CalledEventArgs((string) result.data.given, (string) result.data.dialed));
+                    OnCalled(new CalledEventArgs(HttpUtility.UrlDecode((string) result.data.given), HttpUtility.UrlDecode((string) result.data.dialed)));
                 }
                 catch (PortalAuthorizationException)
                 {

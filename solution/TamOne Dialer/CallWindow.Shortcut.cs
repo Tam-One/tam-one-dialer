@@ -156,11 +156,15 @@ namespace TamOne_Dialer
                     var selectedText = sb.ToString();
                     Console.WriteLine(selectedText);
                     this.txtPhoneNumber.Text = selectedText.Replace("\r\n", "").Replace("\n", "").Trim();
-                    this.ActivateThoroughly();
+                    
                     if (Properties.Settings.Default.AutoDial)
                     {
                         ActionCall();
-                    } 
+                    }
+                    else
+                    {
+                        this.ActivateThoroughly();
+                    }
                     return;
                 }
             }
@@ -181,11 +185,15 @@ namespace TamOne_Dialer
                         var selectedText = Clipboard.GetText();
                         txtPhoneNumber.Text = selectedText.Replace("\r\n", "").Replace("\n", "").Trim();
                         Clipboard.Clear();
-                        this.ActivateThoroughly();
+                        
                         if (Properties.Settings.Default.AutoDial)
                         {
                             ActionCall();
-                        }            
+                        }
+                        else
+                        {
+                            this.ActivateThoroughly();
+                        }      
                     }
                     // Send message along, there might be other programs listening to the copy command.
                     SendMessage(clipboardViewerNext, msg, wParam, lParam);

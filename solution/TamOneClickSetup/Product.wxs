@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="TamOne Click" Language="1033" Version="1.0.2.0" Manufacturer="TamOne" UpgradeCode="aa589f40-64cf-40cf-915d-f489a49a0eee">
+	<Product Id="*" Name="TamOne Click" Language="1033" Version="1.0.3.0" Manufacturer="TamOne" UpgradeCode="aa589f40-64cf-40cf-915d-f489a49a0eee">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of TamOne Click is already installed." />
@@ -59,6 +59,9 @@
       </Component>
       <Component Id="InteractivityDll">
         <File Source="$(var.TamOneDialer.TargetDir)System.Windows.Interactivity.dll" />
+      </Component>
+      <Component Id="TaskbarNotificationDll">
+        <File Source="$(var.TamOneDialer.TargetDir)Hardcodet.Wpf.TaskbarNotification.dll" />
       </Component>
 		</ComponentGroup>
 

@@ -5,8 +5,9 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:Behaviours="clr-namespace:MahApps.Metro.Behaviours;assembly=MahApps.Metro"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        Title="CallWindow" Height="252.164" Width="447.746" ResizeMode="CanMinimize"
-        ShowTitleBar="False" BorderBrush="#FFCDCDCD" BorderThickness="1">
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        Title="TamOne Click" Height="252.164" Width="447.746" ResizeMode="CanMinimize"
+        ShowTitleBar="False" BorderBrush="#FFCDCDCD" BorderThickness="1" Icon="icon2.ico">
     <i:Interaction.Behaviors>
         <Behaviours:BorderlessWindowBehavior  />
     </i:Interaction.Behaviors>
@@ -32,7 +33,7 @@
             <Label VerticalContentAlignment="Center" VerticalAlignment="Center" BorderThickness="5,0" FontSize="16" FontWeight="Light" Content="CLICK"/>
             <Label Margin="20,0,0,0" VerticalContentAlignment="Center" VerticalAlignment="Center" x:Name="lblStatus" FontWeight="Bold">U bent niet ingelogd.</Label>
         </StackPanel>
-        
+
         <!-- toolbar -->
         <StackPanel Margin="10,10,0,0" Grid.Row="1" Grid.RowSpan="1" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button x:Name="btnHelp" Margin="10,0" BorderThickness="0" BorderBrush="{x:Null}" Background="{x:Null}" Style="{StaticResource ToolbarButton}" Click="Help_Click">
@@ -107,4 +108,17 @@
             </StackPanel>
         </Grid>-->
     </Grid>
+    <Window.Resources>
+        <tb:TaskbarIcon x:Name="TrayIcon" x:Key="TrayIcon"
+                  IconSource="/icon2.ico"
+                  ToolTipText="TamOne Click">
+
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Hoofdvenster weegeven" Click="TrayMenu_ShowMainWindow" />
+                    <MenuItem Header="Afsluiten" Click="TrayMenu_Shutdown" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+    </Window.Resources>
 </Controls:MetroWindow>
